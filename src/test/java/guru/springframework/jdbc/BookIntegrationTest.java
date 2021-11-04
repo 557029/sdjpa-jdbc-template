@@ -66,18 +66,29 @@ public class BookIntegrationTest {
         final Book savedBook = this.bookDao.saveNewBook(book);
         assert savedBook.getPublisher().equals("Test");
 
-        book.setPublisher("Privet");
-        final Book updatedBook = this.bookDao.updateBook(book);
-        assertThrows(EmptyResultDataAccessException.class, () -> {
-            bookDao.getById(updatedBook.getId());
-        });
+        savedBook.setPublisher("Privet");
+        final Book updatedBook = this.bookDao.updateBook(savedBook);
+        assert updatedBook != null;
+
 
     }
 
     @Test
     @Order(5)
     public void testDeleteBookById() {
-        // void deleteBookById(Long id);
+        final Book book = new Book();
+        book.setTitle("Test");
+        book.setPublisher("Test");
+        book.setIsbn("978-0321125217");
+        book.setAuthorId(3L);
+        final Book savedBook = this.bookDao.saveNewBook(book);
+        assert savedBook.getPublisher().equals("Test");
+
+        savedBook.setPublisher("Privet");
+        this.bookDao.deleteBookById(savedBook.getId());
+        assertThrows(EmptyResultDataAccessException.class, () -> {
+            bookDao.getById(savedBook.getId());
+        });
     }
 
 }
